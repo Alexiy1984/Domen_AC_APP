@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, 
+body {
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  padding: 0.5rem;
+  background-color: #000;
+  color: #fff;
+  min-width: 100%;
+  border-bottom: 1px solid #000;
+}
+
+.main {
+  min-width: 100%;
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 150px auto auto auto;
+}
+
+.table_cell {
+  border-bottom: 1px solid #777;
+  padding: 0.5rem;
+}
