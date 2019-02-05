@@ -1,15 +1,39 @@
 window.addEventListener("load", function(){
-  var filters = [ 'id', 'type', 'sta', 'dsc' ];
+  var onchangeFilters = [ 'ind', 'name', 'dsc', 'sta' ];
+  var onclickFilters = [ 'sta' ];
+  var textFilters = [];
 
-  filters.forEach( function (elt) {
+  if (textFilters) {
+    textFilters.forEach( function (elt) {
+      var eleData = document.getElementById(elt);
+      //var eleTarget = document.getElementById(elt+'_target');
+
+      eleData.addEventListener('input', function () {  
+        //eleTarget.innerHTML= eleData.value; 
+        //eleTarget.value= eleData.value;
+        document.getElementById('filterform').submit();
+      })  
+    });
+  };
+
+  onchangeFilters.forEach( function (elt) {
     var eleData = document.getElementById(elt);
-    console.log(eleData);
-    var eleTarget = document.getElementById(elt+'_target');
-    eleTarget.innerHTML = 'reach';
-    eleData.addEventListener("change", function () {
-      eleTarget.innerHTML = eleData.value;
-      console.log(eleData.value);
+    //var eleTarget = document.getElementById(elt+'_target');
+    
+    eleData.addEventListener('change', function () {
+      //eleTarget.innerHTML= eleData.value; 
+      //eleTarget.value= eleData.value;
+      document.getElementById('filterform').submit();
     })  
   });
+
+  // onclickFilters.forEach( function (elt) {
+  //   var eleData = document.getElementById(elt);
+
+  //   eleData.addEventListener('click', function () {
+  //     document.getElementById('filterform').submit();
+  //   })  
+  // });
+
 });
 
