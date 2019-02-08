@@ -1,39 +1,36 @@
-window.addEventListener("load", function(){
-  var onchangeFilters = [ 'ind', 'name', 'dsc', 'sta' ];
-  var onclickFilters = [ 'sta' ];
-  var textFilters = [];
+$(document).ready(function() {
 
-  if (textFilters) {
-    textFilters.forEach( function (elt) {
-      var eleData = document.getElementById(elt);
-      //var eleTarget = document.getElementById(elt+'_target');
-
-      eleData.addEventListener('input', function () {  
-        //eleTarget.innerHTML= eleData.value; 
-        //eleTarget.value= eleData.value;
-        document.getElementById('filterform').submit();
-      })  
+  $('#DomainsPG thead th').each( function () {
+    $(this).on('click', 'input', function (evt) {
+      evt.stopPropagation();
     });
-  };
+    var title = $(this).text();
+    $(this).html( '<input class="float-left" type="text" placeholder="Search '+title+'" />' );
+  } );
+ 
 
-  onchangeFilters.forEach( function (elt) {
-    var eleData = document.getElementById(elt);
-    //var eleTarget = document.getElementById(elt+'_target');
-    
-    eleData.addEventListener('change', function () {
-      //eleTarget.innerHTML= eleData.value; 
-      //eleTarget.value= eleData.value;
-      document.getElementById('filterform').submit();
-    })  
+  var table = $('#DomainsPG').DataTable( {
+    "order": [[ 1, "asc" ]],
+    "paging":   true,
+    "ordering": true,
+    "info":     true,
+    "searching": true,
+    "stateSave": true,
+    "pagingType": "full_numbers",
+    pageLength : 5,
+    lengthMenu: [[5, 10, 20, 50], [5, 10, 20, 50]]
   });
 
-  // onclickFilters.forEach( function (elt) {
-  //   var eleData = document.getElementById(elt);
+  table.columns().every( function () {
+    var that = this;
 
-  //   eleData.addEventListener('click', function () {
-  //     document.getElementById('filterform').submit();
-  //   })  
-  // });
-
+    $( 'input', this.header() ).on( 'keyup change', function () {
+      if ( that.search() !== this.value ) {
+        that
+          .search( this.value )
+          .draw();
+      }
+    } );
+  } );
 });
 

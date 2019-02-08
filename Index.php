@@ -6,6 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Admin panel</title>
   <link rel="stylesheet" href="./style/app.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+  </script>
+  <script 
+    type="text/javascript" 
+    charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js">
+  </script>
   <script src="./scripts/app.js"></script>
 </head>
 <body>
@@ -15,95 +25,45 @@
     </div>
     <div class="main">
       <?php
-        require_once __DIR__.'/login.php';
-        require_once __DIR__.'/table.php';
+        require_once __DIR__.'/Connection.php';
+        require_once __DIR__.'/tables.php';
         require_once __DIR__.'/functions.php';
 
-        $conn = new mysqli($hn, $un, $pw, $db);
-        if ($conn->connect_error) die($conn->connect_error);
+        $dbconn = pg_connect("host=$hn dbname=$db user=$un password=$pw")
+        or die('CONNECTION EROR: ' . pg_last_error());
+        $query = "SELECT * FROM {$tables['pt']}";
+        $result = pg_query($query) or die('QUERY ERROR: ' . pg_last_error());
 
-        $string = "SELECT * FROM $table";
-        $conditions = array();
-
-        if (isset($_POST["name"]) || isset($_POST["description"])
-            || isset($_POST["status"])) {
-
-          if (isset($_POST["name"]) && !empty($_POST["name"])) {
-            $name = mysql_entities_fix_string($conn, $_POST['name']);
-            $conditions[] = "(Name LIKE '%$name%')";
-          }
-
-          if (isset($_POST["description"]) && !empty($_POST["description"])) {
-            $description = mysql_entities_fix_string($conn, $_POST['description']); 
-            $conditions[] = "(Description LIKE '%$description%')";
-          }
-
-          if (isset($_POST["status"])) {
-            $status = $_POST['status'];
-            if ($_POST["status"]!='2') {
-              $conditions[] = "(Status='$status')";
-            }   
-          }
-
-          $mCondition = implode( ' AND ', $conditions);
-
-          if ($mCondition) {
-            $mCondition = " WHERE " .$mCondition;
-          } else $mCondition = "";
-          $query = "SELECT * FROM $table" .$mCondition;
-          //echo $mCondition;
-        }  
-  
-        // if (isset($_POST["name"]) && !empty($_POST["name"]))  {
-        //   $name = mysql_entities_fix_string($conn, $_POST['name']);
-        //   $query = "SELECT * FROM $table WHERE (Name LIKE '%$name%')";
-        // } else $query = "SELECT * FROM $table";
-        
-        $result = $conn->query($query);
-
-        if (!$result) die ($conn->error);
-
-        $rows = $result->num_rows;
-      ?>
-      <div class="table_cell">
-        Identifier:<br>
-        <input id="ind" type="text" name="identifier" form="filterform">
-      </div>
-      <div class="table_cell">
-        Name:<br>
-        <input id="name" type="text" value="<?= $name ?>" name="name" form="filterform">
-      </div>
-      <div class="table_cell">
-        Status:<br>
-        <select id="sta" name="status" form="filterform">
-          <option value='2' <?php if ($status == 2) echo 'selected'; ?> >All</option>
-          <option value='1' <?php if ($status == 1) echo 'selected'; ?> >Online</option>
-          <option value='0' <?php if ($status == 0) echo 'selected'; ?> >Off</option>
-        </select>
-      </div>
-      <div class="table_cell">
-        Description:<br>
-        <input id="dsc" type="text" value="<?= $description ?>" name="description" form="filterform">
-      </div>
+      ?> 
+      <table id="DomainsPG" class="display" style="width:100%">
+        <thead>
+          <tr>
+            <th>Identifier</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>  
+          <?php  
+            while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
+            echo "<tr>\n";
+            foreach ($line as $col_value) {
+              if ($col_value == 't') echo "<td>Online</td>";
+              else if ($col_value == 'f') echo "<td>Offline</td>";
+              else echo "<td>$col_value</td>";
+            }
+            echo "</tr>";
+            }
+            error_reporting(0);
+            TableInsert($dbconn, $tables['pt'], $pt_array);
+          ?>
+        </tbody>    
+      </table>
       <?php
-        for ($i=0; $i < $rows; ++$i) { 
-          $result->data_seek($i);
-          $row = $result->fetch_array(MYSQLI_ASSOC);
-          echo '<div class="table_cell">'.$row['uni_id'].'</div>';
-          echo '<div class="table_cell">'. $row['Name'].'</div>';
-          echo ($row['Status']) ? '<div class="table_cell">Online</div>'
-          : '<div class="table_cell">Off</div>';  
-          echo '<div class="table_cell">'.$row['Description'].'</div>';
-        }
-        $result->close;
-        $conn->close;
+        pg_free_result($result);
+        pg_close($dbconn);
       ?>
-      <form action="index.php" method="post" class="hiddena" id="filterform">
-        <!-- <input type="text" id="ind_target" name="identifier"> -->
-        <!-- <input type="text" id="name_target" name="name"> -->
-        <!-- <input type="text" id="sta_target" name="status"> -->
-        <!-- <input type="text" id="dsc_target" name="description"> -->
-      </form>
     </div>
 </body>
 </html>
