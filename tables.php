@@ -9,6 +9,6 @@
     ['name' => 'Domain_AA.com'  , 'state' => 't', 'description' => 'No data'                  ],
     ['name' => 'Domain_AB.com'  , 'state' => 'f', 'description' => 'No data present'          ],
     ['name' => 'Guthackers.com' , 'state' => 't', 'description' => 'For guthackers'           ],
-    ['name' => 'Test3.com'      , 'state' => 't', 'description' => 'For tests'                ]
+    ['name' => 'Test_new.com'   , 'state' => 't', 'description' => 'For tests new'            ]
   ];   
 ?>

@@ -38,6 +38,7 @@ body {
       -ms-flex-direction: column;
           flex-direction: column;
   height: 100%;
+  z-index: 10;
 }
 
 .header {
@@ -60,6 +61,69 @@ body {
   float: left;
 }
 
+.text-left {
+  text-align: left;
+}
+
+.pb-1 {
+  padding-bottom: 0.5rem; 
+}
+
+.pt-1 {
+  padding-top: 0.5rem;
+}
+
+.error-message {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: #f3d9d9;
+  color: #dc3545;
+}
+
 .hidden {
   visibility: hidden;
+}
+
+.popupWindow {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupWindow form {
+  background: #fff;
+  width: 35vw;
+  padding: 1rem;
+}
+
+.popupWindow button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.popupWindow button:last-child {
+  margin-bottom: 0;
+}
+
+.data {
+  padding: 0.25rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.data[type=submit] {
+  margin-bottom: 0;
+  display: inline-block;
+  height: 10rem;
+}
+
+.domainsPG__collumns span {
+  text-transform: capitalize;
 }

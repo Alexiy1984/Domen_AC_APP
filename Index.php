@@ -34,6 +34,12 @@ if (!$validated) {
   <script src="./scripts/app.js"></script>
 </head>
 <body>
+  <div class="popupWindow" id="popupWindow">
+    <form action="index.php" method="POST" class="PWInner">
+      <button class="addRow">Add row</button>
+      <button class="editRow">Edit row</button>
+    </form>
+  </div>
   <div class="wrapper">
     <div class="header">
       <h2>Admin panel</h2>
@@ -48,15 +54,17 @@ if (!$validated) {
         or die('CONNECTION EROR: ' . pg_last_error());
         $query = "SELECT * FROM {$tables['pt']}";
         $result = pg_query($query) or die('QUERY ERROR: ' . pg_last_error());
-
-      ?> 
+        $i = pg_num_fields($result);
+      ?>
       <table id="DomainsPG" class="display" style="width:100%">
         <thead>
           <tr>
-            <th>Identifier</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Description</th>
+          <?php 
+            for ($j = 0; $j < $i; $j++) {
+              $fieldname = pg_field_name($result, $j);
+              echo "<th class='text-left domainsPG__collumns'><span>{$fieldname}</span></th>";
+            }
+          ?>
           </tr>
         </thead>
         <tbody>  
@@ -72,6 +80,9 @@ if (!$validated) {
             }
             error_reporting(0);
             TableInsert($dbconn, $tables['pt'], $pt_array);
+            // $line = pg_fetch_array($result, 3, PGSQL_ASSOC);
+            // echo $line['identifier'];
+            InsertRow($dbconn, $tables['pt']);
           ?>
         </tbody>    
       </table>
